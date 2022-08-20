@@ -11,6 +11,8 @@ THIS AN EARLY ALPHA WITHOUT ALL FEATURES IMPLEMENTED YET. THERE ARE BUGS(AT LEAS
 > - revert after install
 > 
 > - install feedback
+>
+> - no CSM bootloader support
 
 ## Introduction
 
