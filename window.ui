@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+	<object class="GtkApplicationWindow" id="window">
+		<property name="title">VM Installer CLI</property>
+		<property name="default-width">700</property>
+		<property name="default-height">450</property>
+
+		<!--
+
+		<child>
+			<object class="GtkHeaderBar" id="headerbar">
+        			<child>
+					<object class="GtkButton" id="button_previous">
+						<property name="label">previous</property>
+						<property name="halign">start</property>
+            					<property name="valign">center</property>
+          				</object>
+        			</child>
+     				
+				<child>
+          				<object class="GtkButton" id="button_next">
+						<property name="label">next</property>
+						<property name="halign">end</property>
+            					<property name="valign">center</property>
+          				</object>
+        			</child>
+      			</object>
+		</child>
+
+		-->
+	</object>
+</interface>
