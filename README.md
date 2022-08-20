@@ -4,7 +4,7 @@ THIS AN EARLY ALPHA WITHOUT ALL FEATURES IMPLEMENTED YET. THERE ARE BUGS. THE FO
 
 > - headless
 > 
-> - QXC / spice video
+> - QXL / spice video
 > 
 > - VNC
 > 
