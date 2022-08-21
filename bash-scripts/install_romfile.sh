@@ -1,5 +1,4 @@
 #! /bin/bash
-# $1 = input romfile
 # $2 = selected_gpu_number
 
 #ls ~/.local/share/VMInstaller-CLI || mkdir ~/.local/share/VMInstaller-CLI
@@ -12,7 +11,7 @@ then
 
   cd NVIDIA-vBIOS-VFIO-Patcher
 
-  python nvidia_vbios_vfio_patcher.py -i $1 -o ../hooks/patched.rom
+  python nvidia_vbios_vfio_patcher.py -i files/input.rom -o ../hooks/patched.rom
 else
   mv $1 ../hooks/patched.rom
 fi

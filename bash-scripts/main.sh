@@ -20,12 +20,13 @@ then
 	exit 2
 fi
 
+bash copy_files.sh $2 $10
 bash grub_arguments.sh
-bash install_romfile.sh	$10 $9
+bash install_romfile.sh $9
 
 
 
-bash setup_virsh_install_cmd.sh $1 $6 $7 $2 $3 $4 $5 $11 $12 $13 $14
+bash setup_virsh_install_cmd.sh $1 $6 $7 /files/input.iso $3 $4 $5 $11 $12 $13 $14
 
 bash virsh_install.sh
 

@@ -38,34 +38,34 @@ void switch_to_next(GtkWidget *stack){
 	if(selected_graphics_mode < 3 && flag == 3){
 		flag = 4;
 	}
-	
+
 	unsigned int changed_visible_stack_child = 0;
 
 
 	if(flag == 0){
 		gtk_stack_set_visible_child_name(GTK_STACK(stack), "choose_vm_name");
 		changed_visible_stack_child = 1;
-		
+
 	}else if(flag == 1){
 		if(vm_name != NULL){
 			gtk_stack_set_visible_child_name(GTK_STACK(stack), "select_iso_file");
 			changed_visible_stack_child = 1;
 		}
-		
+
 	}else if(flag == 2){
 		if(selected_iso_filename != NULL){
 			gtk_stack_set_visible_child_name(GTK_STACK(stack), "install_settings_box");
 			changed_visible_stack_child = 1;
 		}
-			
+
 	}else if(flag == 3){
 		gtk_stack_set_visible_child_name(GTK_STACK(stack), "select_romfile_box");
-		changed_visible_stack_child = 1;	
-	
-	}else if(flag == 4){
-		gtk_stack_set_visible_child_name(GTK_STACK(stack), "bios_options_box");	
 		changed_visible_stack_child = 1;
-	
+
+	}else if(flag == 4){
+		gtk_stack_set_visible_child_name(GTK_STACK(stack), "bios_options_box");
+		changed_visible_stack_child = 1;
+
 	}else if(flag == 5){
 		gtk_stack_set_visible_child_name(GTK_STACK(stack), "install_vm_box");
 		changed_visible_stack_child = 1;
@@ -92,13 +92,13 @@ void switch_to_previous(GtkWidget *stack){
 
 	}else if(flag == 3){
 		gtk_stack_set_visible_child_name(GTK_STACK(stack), "select_iso_file");
-        
+
 	}else if(flag == 4){
 		gtk_stack_set_visible_child_name(GTK_STACK(stack), "install_settings_box");
-	
+
 	}else if(flag == 5){
 		gtk_stack_set_visible_child_name(GTK_STACK(stack), "select_romfile_box");
-	
+
 	}else if(flag == 6){
 		gtk_stack_set_visible_child_name(GTK_STACK(stack), "bios_options_box");
 	}
@@ -193,7 +193,7 @@ void cpu_selected_cores_callback(GtkWidget *scale){
 
 
 void cpu_selected_threads_callback(GtkWidget *scale){
-	selected_cpu_threads = gtk_range_get_value(GTK_RANGE(scale));	
+	selected_cpu_threads = gtk_range_get_value(GTK_RANGE(scale));
 }
 
 
@@ -218,7 +218,7 @@ GtkWidget *combo_box_new_from_strings(const char **string_input, unsigned int n_
 
 
 void changed_selected_graphics_callback(GtkWidget *combo_box){
-	
+
 	selected_graphics_mode = gtk_combo_box_get_active(GTK_COMBO_BOX(combo_box));
 }
 
@@ -323,9 +323,9 @@ static void install_vm(){
 	exec_string = (char *) malloc(10000000);
 	//printf("%ld\n", strlen(exec_string));
 	//exec_string = realloc(exec_string, 10000);
-	
+
 	//exec_string = NULL;
-	
+
 
 	char* selected_cpu_sockets_string = malloc((int)log10(selected_cpu_sockets));
 	char* selected_cpu_cores_string = malloc((int)log10(selected_cpu_cores));
@@ -342,24 +342,24 @@ static void install_vm(){
 	sprintf(selected_cpu_threads_string, "%d", selected_cpu_threads);
 	sprintf(selected_memory_string, "%f", selected_memory);
 	sprintf(selected_storage_string, "%f", selected_storage);
-	
+
 	if(selected_graphics_mode >= 3){
 		sprintf(selected_paravirtualized_string, "1");
-	
+
 	}else{
 		sprintf(selected_paravirtualized_string, "0");
 	}
 
 	if(selected_graphics_mode >= 3){
 		sprintf(selected_graphics_mode_string, " %d", selected_graphics_mode - 2);
-	
+
 	}else{
 		sprintf(selected_graphics_mode_string, "0");
 	}
 
 	if(selected_bios == 1){
 		sprintf(selected_secboot_string, "1");
-	
+
 	}else{
 		sprintf(selected_secboot_string, "0");
 	}
@@ -367,7 +367,7 @@ static void install_vm(){
 	if(selected_tpm == 1){
 		sprintf(selected_tpm_string, "1");
 		printf("selected_tmp=1\n");
-	
+
 	}else{
 		printf("error occurs here!\n");
 		sprintf(selected_tpm_string, "0");
@@ -375,11 +375,11 @@ static void install_vm(){
 	}
 
 	strcpy(exec_string,"pkexec bash bash-scripts/main.sh");
-	strcat(exec_string, " ");
+	strcat(exec_string, " \"");
 	strcat(exec_string, vm_name);
-	strcat(exec_string, " ");
+	strcat(exec_string, "\" \"");
 	strcat(exec_string, selected_iso_filename);
-	strcat(exec_string, " ");
+	strcat(exec_string, "\" ");
 	strcat(exec_string, selected_cpu_sockets_string);
 	strcat(exec_string, " ");
 	strcat(exec_string, selected_cpu_cores_string);
@@ -393,9 +393,9 @@ static void install_vm(){
 	strcat(exec_string, selected_paravirtualized_string);
 	strcat(exec_string, " ");
 	strcat(exec_string, selected_graphics_mode_string);
-	strcat(exec_string, " ");
+	strcat(exec_string, " \"");
 	strcat(exec_string, selected_rom_filename);
-	strcat(exec_string, " ");
+	strcat(exec_string, "\" ");
 	strcat(exec_string, selected_secboot_string);
 	strcat(exec_string, " ");
 	strcat(exec_string, selected_tpm_string);
@@ -405,8 +405,8 @@ static void install_vm(){
 
 
 	system(exec_string);
-	
-	
+
+
 	free(exec_string);
 }
 
@@ -423,7 +423,7 @@ static void app_startup(GApplication *application){
 
 	//cpu_cores
 	{
-		char *buffer = NULL; 
+		char *buffer = NULL;
 		buffer = (char*)calloc((long unsigned int)buffer, BUFSIZ + 1);
 
 		FILE *content_buffer = popen("lscpu | grep 'Core(s)' | awk '{print $4}'","r");
@@ -432,7 +432,7 @@ static void app_startup(GApplication *application){
 			int chars_read = fread(buffer, sizeof(char), BUFSIZ, content_buffer);
 
 			if(chars_read > 0){
-				cpu_cores = atoi(buffer);	
+				cpu_cores = atoi(buffer);
 			}
 		}
 
@@ -510,7 +510,7 @@ static void app_startup(GApplication *application){
 
 	//n_gpus
 	{
-		char *buffer = NULL; 
+		char *buffer = NULL;
 		buffer = (char*)calloc((long unsigned int)buffer, BUFSIZ + 1);
 
                 FILE *content_buffer = popen("lspci -nn | grep VGA | wc -l","r");
@@ -650,7 +650,7 @@ static void app_activate(GApplication *application){
 	GtkBox *box_choose_vm_name = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 20));
 	gtk_widget_set_halign(GTK_WIDGET(box_choose_vm_name), GTK_ALIGN_CENTER);
 	gtk_widget_set_valign(GTK_WIDGET(box_choose_vm_name), GTK_ALIGN_CENTER);
-	
+
 	gtk_stack_add_named(GTK_STACK(stack), GTK_WIDGET(box_choose_vm_name), "choose_vm_name");
 
 	{
@@ -658,7 +658,7 @@ static void app_activate(GApplication *application){
 		GtkWidget *choose_vm_name_entry = gtk_entry_new();
 
 		g_signal_connect_swapped(choose_vm_name_entry, "changed", G_CALLBACK(changed_vm_name_callback), choose_vm_name_entry);
-		
+
 		gtk_box_append(GTK_BOX(box_choose_vm_name), GTK_WIDGET(choose_vm_name_label));
 		gtk_box_append(GTK_BOX(box_choose_vm_name), GTK_WIDGET(choose_vm_name_entry));
 	}
@@ -675,9 +675,9 @@ static void app_activate(GApplication *application){
 		iso_icon = gtk_image_new_from_icon_name("document-new");
 		iso_filename_label = gtk_label_new("");
 		gtk_image_set_icon_size(GTK_IMAGE(iso_icon), GTK_ICON_SIZE_LARGE);
-		
+
 		//GtkWidget *file_label = gtk_label_new("");
-		
+
 		GtkButton *choose_iso_button = GTK_BUTTON(gtk_button_new_with_label("Select an iso file"));
 
 		g_signal_connect_swapped(choose_iso_button, "clicked", G_CALLBACK(choose_iso_file), window);
@@ -824,9 +824,9 @@ static void app_activate(GApplication *application){
 			char **graphics_selection_options;
 
 			unsigned int n_graphics_selection_options = 3 + n_gpus;
-			
+
 			graphics_selection_options = malloc(sizeof(char*) * n_graphics_selection_options);
-			
+
 			graphics_selection_options[0] = malloc(sizeof(char) * strlen("Headless"));
 			graphics_selection_options[0] = "Headless";
 
@@ -849,12 +849,12 @@ static void app_activate(GApplication *application){
 			g_signal_connect_swapped(combo_box_graphics_options, "changed", G_CALLBACK(changed_selected_graphics_callback), combo_box_graphics_options);
 
 
-			
+
 			gtk_box_append(GTK_BOX(box_graphics), GTK_WIDGET(graphics_label));
 			gtk_box_append(GTK_BOX(box_graphics), GTK_WIDGET(combo_box_graphics_options));
 
 			//gtk_grid_attach(GTK_GRID(install_settings_grid), GTK_WIDGET(box_graphics), 0, 1, 2, 1);
-			gtk_box_append(GTK_BOX(box_coloum_1), GTK_WIDGET(box_graphics));	
+			gtk_box_append(GTK_BOX(box_coloum_1), GTK_WIDGET(box_graphics));
 		}
 
 		gtk_box_append(GTK_BOX(install_settings_box), GTK_WIDGET(box_coloum_1));
@@ -975,7 +975,7 @@ static void app_activate(GApplication *application){
 
 
 		gtk_box_append(GTK_BOX(install_settings_box), GTK_WIDGET(box_coloum_2));
-		
+
 	}
 
 
@@ -1003,10 +1003,10 @@ static void app_activate(GApplication *application){
                 gtk_box_append(GTK_BOX(select_romfile_box), GTK_WIDGET(romfile_filename_label));
                 gtk_box_append(GTK_BOX(select_romfile_box), GTK_WIDGET(choose_romfile_button));
 		gtk_box_append(GTK_BOX(select_romfile_box), GTK_WIDGET(explainer));
-	
+
 	}
 
-	
+
 	GtkBox *bios_options_box = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 20));
         gtk_widget_set_halign(GTK_WIDGET(bios_options_box), GTK_ALIGN_CENTER);
         gtk_widget_set_valign(GTK_WIDGET(bios_options_box), GTK_ALIGN_CENTER);
