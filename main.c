@@ -1005,7 +1005,7 @@ static void app_activate(GApplication *application){
 			GtkBox *box_tpm = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 5));
 
 			GtkWidget *tpm_checkbutton = gtk_check_button_new();
-			gtk_check_button_set_label(GTK_CHECK_BUTTON(tpm_checkbutton), "Emulated TPM(2.1)								");
+			gtk_check_button_set_label(GTK_CHECK_BUTTON(tpm_checkbutton), "Emulated TPM(2.0)								");
 
 			g_signal_connect(tpm_checkbutton, "toggled", G_CALLBACK(changed_selected_tpm_callback), tpm_checkbutton);
 
