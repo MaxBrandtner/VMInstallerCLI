@@ -435,7 +435,7 @@ static void app_startup(GApplication *application){
 	strcat(cmd_cd, xargs_string);
 	strcat(cmd_cd, "&&");
 
-	printf("%s\n", cmd_cd);
+	//printf("%s\n", cmd_cd);
 	exec_dir = (char*)calloc(PATH_MAX, sizeof(char));
 	strcpy(exec_dir, cmd_cd);
 	//system(cmd_cd);
@@ -462,8 +462,8 @@ static void app_startup(GApplication *application){
 		pclose(content_buffer);
 	}
 
-	printf("check cpu_cores\n");
-	printf("%d\n", cpu_cores);
+	//printf("check cpu_cores\n");
+	//printf("%d\n", cpu_cores);
 
 	//cpu_threads
 	{
@@ -484,8 +484,8 @@ static void app_startup(GApplication *application){
 	}
 
 
-	printf("check cpu_threads\n");
-	printf("%d\n", cpu_threads);
+	//printf("check cpu_threads\n");
+	//printf("%d\n", cpu_threads);
 
 
 	//max_free_storage
@@ -512,8 +512,8 @@ static void app_startup(GApplication *application){
                 pclose(content_buffer);
 	}
 
-	printf("check max_free_storage\n");
-	printf("%f\n", max_free_storage);
+	//printf("check max_free_storage\n");
+	//printf("%f\n", max_free_storage);
 
 
 	//max_memory
@@ -534,8 +534,8 @@ static void app_startup(GApplication *application){
                 pclose(content_buffer);
 	}
 
-	printf("check max_memory\n");
-	printf("%f\n", max_memory);
+	//printf("check max_memory\n");
+	//printf("%f\n", max_memory);
 
 	//n_gpus
 	{
@@ -555,8 +555,8 @@ static void app_startup(GApplication *application){
                 pclose(content_buffer);
 	}
 
-	printf("check n_gpus\n");
-	printf("%d\n",n_gpus);
+	//printf("check n_gpus\n");
+	//printf("%d\n",n_gpus);
 	//*gpu_names = (char**)realloc(*gpu_names, n_gpus * sizeof(char*));
 	gpu_names = malloc(sizeof(char*) * n_gpus);
 	//gpu_names
@@ -586,20 +586,20 @@ static void app_startup(GApplication *application){
 
 									printf("check\n");
                 	if(content_buffer != NULL){
-													printf("check again\n");
+													//printf("check again\n");
                        		int chars_read = fread(buffer, sizeof(char), BUFSIZ, content_buffer);
-													printf("check");
+													//printf("check");
 													gpu_names[i] = NULL;
                         	if(chars_read > 0){
 																	//(*gpu_names)[i] = (char*)realloc((*gpu_names[i]), strlen(buffer) * sizeof(char));
                                		gpu_names[i] = malloc(sizeof(char) * strlen(buffer));
-																	printf("check alloc\n");
+																	//printf("check alloc\n");
 																	//gpu_names[i] = buffer;
 																	//gpu_names[i] = NULL;
 																	strcpy(gpu_names[i], buffer);
 																	//int new_line_position = strcspn(gpu_names[i], "\n");
 																	strtok(gpu_names[i], "\n");
-																	printf("check assign\n");
+																	//printf("check assign\n");
                         	}
                		}
 
@@ -607,11 +607,11 @@ static void app_startup(GApplication *application){
 		}
 	}
 
-	printf("check gpu_names\n");
+	//printf("check gpu_names\n");
 
-	for(int i = 0; i < n_gpus; i ++){
+	/*for(int i = 0; i < n_gpus; i ++){
 		printf("%s\n", gpu_names[i]);
-	}
+	}*/
 }
 
 
