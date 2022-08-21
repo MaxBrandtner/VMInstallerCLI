@@ -547,19 +547,24 @@ static void app_startup(GApplication *application){
 
 
                 	FILE *content_buffer = popen(input_string,"r");
-			//FILE *content_buffer = popen("bash bash-scripts/list_gpus.sh 1", "r");
+									//FILE *content_buffer = popen("bash bash-scripts/list_gpus.sh 1", "r");
 
-			printf("check\n");
+									printf("check\n");
                 	if(content_buffer != NULL){
-				printf("check again\n");
+													printf("check again\n");
                        		int chars_read = fread(buffer, sizeof(char), BUFSIZ, content_buffer);
-				printf("check");
+													printf("check");
+													gpu_names[i] = NULL;
                         	if(chars_read > 0){
-					//(*gpu_names)[i] = (char*)realloc((*gpu_names[i]), strlen(buffer) * sizeof(char));
+																	//(*gpu_names)[i] = (char*)realloc((*gpu_names[i]), strlen(buffer) * sizeof(char));
                                		gpu_names[i] = malloc(sizeof(char) * strlen(buffer));
-					printf("check alloc\n");
-					gpu_names[i] = buffer;
-					printf("check assign\n");
+																	printf("check alloc\n");
+																	//gpu_names[i] = buffer;
+																	//gpu_names[i] = NULL;
+																	strcpy(gpu_names[i], buffer);
+																	//int new_line_position = strcspn(gpu_names[i], "\n");
+																	strtok(gpu_names[i], "\n");
+																	printf("check assign\n");
                         	}
                		}
 
