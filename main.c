@@ -8,7 +8,7 @@
 
 
 
-
+char *exec_dir;
 unsigned int flag = 0;
 GtkWidget *stack;
 char *selected_iso_filename;
@@ -374,7 +374,8 @@ static void install_vm(){
 		printf("selected_tpm!=1\n");
 	}
 
-	strcpy(exec_string,"pkexec bash bash-scripts/main.sh");
+	strcat(exec_string, exec_dir);
+	strcat(exec_string,"pkexec bash ../bash-scripts/main.sh");
 	strcat(exec_string, " \"");
 	strcat(exec_string, vm_name);
 	strcat(exec_string, "\" \"");
@@ -416,6 +417,28 @@ static void install_vm(){
 
 
 static void app_startup(GApplication *application){
+  //char self[PATH_MAX] = { 0 };
+	char* exe_dir;
+	//exe_dir = malloc(PATH_MAX + 1);
+	exe_dir = (char*)calloc(PATH_MAX, sizeof(char));
+	readlink("/proc/self/exe", exe_dir, PATH_MAX);
+	//strcat(exe_dir, "\n");
+
+	char* cmd_cd;
+	cmd_cd = malloc(PATH_MAX + 1000);
+
+	char *xargs_string = "| xargs dirname)";
+	//| sed \"s/^/\\\"/\" | sed \"s/$/\\\"/\")";
+
+	strcpy(cmd_cd, "cd $(echo ");
+	strcat(cmd_cd, exe_dir);
+	strcat(cmd_cd, xargs_string);
+	strcat(cmd_cd, "&&");
+
+	printf("%s\n", cmd_cd);
+	exec_dir = (char*)calloc(PATH_MAX, sizeof(char));
+	strcpy(exec_dir, cmd_cd);
+	//system(cmd_cd);
 	//gpu_names = malloc(sizeof(char*) * 1);
 	//gpu_names[0] = malloc(sizeof(char) * strlen("NVIDIA GeForce RTX 2060 Rev. A"));
 	//gpu_names[0] = "NVIDIA GeForce RTX 2060 Rev. A";
@@ -470,7 +493,13 @@ static void app_startup(GApplication *application){
 		char *buffer = NULL;
 		buffer = (char*)calloc((long unsigned int)buffer, BUFSIZ + 1);
 
-                FILE *content_buffer = popen("bash bash-scripts/free_storage_main_device.sh","r");
+								char *storage_script_string;
+								storage_script_string = (char*)calloc(BUFSIZ, sizeof(char));
+
+								strcpy(storage_script_string, exec_dir);
+								strcat(storage_script_string, "bash ../bash-scripts/free_storage_main_device.sh");
+
+								FILE *content_buffer = popen(storage_script_string,"r");
 
                 if(content_buffer != NULL){
                        	int chars_read = fread(buffer, sizeof(char), BUFSIZ, content_buffer);
@@ -533,16 +562,22 @@ static void app_startup(GApplication *application){
 	//gpu_names
 	{
 		for(int i = 0; i < n_gpus; i ++){
-			char *buffer = malloc(sizeof(char) * BUFSIZ + 1);
+			char *buffer;
+			buffer = (char*)calloc(BUFSIZ + 1, sizeof(char));
 
-			char *input_string = malloc(sizeof(char) * BUFSIZ  + 1);
+			char *input_string;
+			input_string = (char*)calloc(BUFSIZ + 1, sizeof(char));
 			//input_string = "bash bash-scripts/list_gpus.sh ";
 			//char *i_char = malloc(sizeof(char) * (long unsigned int)log10 * i);
 			//sprintf(i_char, "%d", i);
 			//printf("check 0\n");
 			//strcat(input_string, i_char);
 			//printf("%s\n", input_string);
-			sprintf(input_string, "bash bash-scripts/list_gpus.sh %i",(i + 1));
+			strcat(input_string, exec_dir);
+			char* bash_script;
+			bash_script = (char*)calloc(BUFSIZ + 1, sizeof(char));
+			sprintf(bash_script, "bash ../bash-scripts/list_gpus.sh %i",(i + 1));
+			strcat(input_string, bash_script);
 			//printf("%s\n", input_string);
 
 
