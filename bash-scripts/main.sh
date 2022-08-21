@@ -21,7 +21,7 @@ then
 fi
 
 bash grub_arguments.sh
-bash install_romfile.sh	$9
+bash install_romfile.sh	$10 $9
 
 
 
