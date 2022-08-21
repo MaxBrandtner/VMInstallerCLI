@@ -366,12 +366,12 @@ static void install_vm(){
 
 	if(selected_tpm == 1){
 		sprintf(selected_tpm_string, "1");
-		printf("selected_tmp=1\n");
+		//printf("selected_tmp=1\n");
 
 	}else{
-		printf("error occurs here!\n");
+		//printf("error occurs here!\n");
 		sprintf(selected_tpm_string, "0");
-		printf("selected_tpm!=1\n");
+		//printf("selected_tpm!=1\n");
 	}
 
 	strcat(exec_string, exec_dir);
@@ -584,7 +584,7 @@ static void app_startup(GApplication *application){
                 	FILE *content_buffer = popen(input_string,"r");
 									//FILE *content_buffer = popen("bash bash-scripts/list_gpus.sh 1", "r");
 
-									printf("check\n");
+									//printf("check\n");
                 	if(content_buffer != NULL){
 													//printf("check again\n");
                        		int chars_read = fread(buffer, sizeof(char), BUFSIZ, content_buffer);
