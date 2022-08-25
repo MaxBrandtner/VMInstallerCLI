@@ -20,6 +20,8 @@ then
 	exit 2
 fi
 
+usermod -a -G libvirt $(who | awk '{print $1}')
+
 bash copy_files.sh $2 $10
 bash grub_arguments.sh
 bash install_romfile.sh $9
