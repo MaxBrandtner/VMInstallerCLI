@@ -1,7 +1,7 @@
 #!/bin/bash
 #$1 = input GPU list
 #iommu_group=$(lspci -nn| grep '\[0300' | head -n $1 | tail -n 1)
-if [ $1 < 1 ]
+if [ $1 -lt 1 ]
 then
 	exit 0
 fi
