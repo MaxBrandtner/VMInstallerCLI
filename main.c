@@ -152,7 +152,7 @@ void iso_filename_label_callback(GtkWidget *dialog, gint response, GtkWidget *la
 
 void choose_iso_file(GtkWidget *window){
 	GtkWidget *dialog = gtk_file_chooser_dialog_new("Select iso file", GTK_WINDOW(window),
-			GTK_FILE_CHOOSER_ACTION_SAVE,
+			GTK_FILE_CHOOSER_ACTION_OPEN,
 			"Cancel", GTK_RESPONSE_CANCEL,
 			"Select", GTK_RESPONSE_ACCEPT, NULL);
 
@@ -286,7 +286,7 @@ void store_rom_filename(GtkWidget *dialog, gint response, GtkFileChooser *choose
 
 void choose_romfile_callback(GtkWidget *window){
         GtkWidget *dialog = gtk_file_chooser_dialog_new("Select romfile", GTK_WINDOW(window),
-                        GTK_FILE_CHOOSER_ACTION_SAVE,
+                        GTK_FILE_CHOOSER_ACTION_OPEN,
                         "Cancel", GTK_RESPONSE_CANCEL,
                         "Select", GTK_RESPONSE_ACCEPT, NULL);
 
