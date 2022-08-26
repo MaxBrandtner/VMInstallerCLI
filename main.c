@@ -948,9 +948,9 @@ static void app_activate(GApplication *application){
 
 			GtkWidget *bios_label = gtk_label_new("BIOS								");
 
-			const char* bios_selection_options[3] = {"UEFI", "UEFI with SecureBoot", "CSM (legacy)"};
+			const char* bios_selection_options[3] = {"UEFI", "UEFI with SecureBoot"};
 
-			GtkWidget *combo_box_bios_options = combo_box_new_from_strings((const char**)bios_selection_options, 3);
+			GtkWidget *combo_box_bios_options = combo_box_new_from_strings((const char**)bios_selection_options, 2);
 
 			g_signal_connect_swapped(combo_box_bios_options, "changed", G_CALLBACK(changed_selected_bios_callback), combo_box_bios_options);
 
