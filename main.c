@@ -767,6 +767,7 @@ static void app_activate(GApplication *application){
                         }
 
                         gtk_scale_set_has_origin(GTK_SCALE(cpu_cores_scale), TRUE);
+												gtk_range_set_value(GTK_RANGE(cpu_cores_scale), cpu_cores - 1);
 
 			g_signal_connect_swapped(cpu_cores_scale, "value_changed", G_CALLBACK(cpu_selected_cores_callback), cpu_cores_scale);
 
@@ -797,6 +798,7 @@ static void app_activate(GApplication *application){
                         }
 
                         gtk_scale_set_has_origin(GTK_SCALE(cpu_threads_scale), TRUE);
+												gtk_range_set_value(GTK_RANGE(cpu_threads_scale), cpu_threads);
 
 			g_signal_connect_swapped(cpu_threads_scale, "value_changed", G_CALLBACK(cpu_selected_threads_callback), cpu_threads_scale);
 
@@ -889,6 +891,11 @@ static void app_activate(GApplication *application){
 
                                 gtk_scale_add_mark(GTK_SCALE(storage_scale), max_free_storage, GTK_POS_BOTTOM, css_style_storage_scale);
 
+																if(max_free_storage > 50){
+																	gtk_range_set_value(GTK_RANGE(storage_scale), 50);
+
+																}
+
 			}
 
                         gtk_scale_set_has_origin(GTK_SCALE(storage_scale), TRUE);
@@ -929,6 +936,7 @@ static void app_activate(GApplication *application){
                         }
 
                         gtk_scale_set_has_origin(GTK_SCALE(memory_scale), TRUE);
+												gtk_range_set_value(GTK_RANGE(memory_scale), max_memory / 2);
                         gtk_scale_set_draw_value(GTK_SCALE(memory_scale), TRUE);
                         gtk_scale_set_value_pos(GTK_SCALE(memory_scale), GTK_POS_BOTTOM);
 
