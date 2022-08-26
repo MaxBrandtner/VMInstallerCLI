@@ -14,7 +14,6 @@ GtkWidget *stack;
 char *selected_iso_filename;
 unsigned int cpu_cores = 6;
 unsigned int cpu_threads = 2;
-unsigned int selected_cpu_sockets = 1;
 unsigned int selected_cpu_cores = 1;
 unsigned int selected_cpu_threads = 1;
 unsigned int n_gpus = 1;
@@ -179,12 +178,6 @@ void choose_iso_file(GtkWidget *window){
 
 
 
-void cpu_selected_sockets_callback(GtkWidget *scale){
-        selected_cpu_sockets = gtk_range_get_value(GTK_RANGE(scale));
-}
-
-
-
 void cpu_selected_cores_callback(GtkWidget *scale){
         selected_cpu_cores = gtk_range_get_value(GTK_RANGE(scale));
 }
@@ -327,7 +320,6 @@ static void install_vm(){
 	//exec_string = NULL;
 
 
-	char* selected_cpu_sockets_string = malloc((int)log10(selected_cpu_sockets));
 	char* selected_cpu_cores_string = malloc((int)log10(selected_cpu_cores));
 	char* selected_cpu_threads_string = malloc((int)log10(selected_cpu_threads));
 	char* selected_memory_string = malloc((int)log10(selected_memory));
@@ -337,7 +329,6 @@ static void install_vm(){
 	char* selected_secboot_string = malloc(sizeof(char) *2);
 	char* selected_tpm_string = malloc(sizeof(char) * 5);
 
-	sprintf(selected_cpu_sockets_string, "%d", selected_cpu_sockets);
 	sprintf(selected_cpu_cores_string, "%d", selected_cpu_cores);
 	sprintf(selected_cpu_threads_string, "%d", selected_cpu_threads);
 	sprintf(selected_memory_string, "%f", selected_memory);
@@ -381,8 +372,6 @@ static void install_vm(){
 	strcat(exec_string, "\" \"");
 	strcat(exec_string, selected_iso_filename);
 	strcat(exec_string, "\" ");
-	strcat(exec_string, selected_cpu_sockets_string);
-	strcat(exec_string, " ");
 	strcat(exec_string, selected_cpu_cores_string);
 	strcat(exec_string, " ");
 	strcat(exec_string, selected_cpu_threads_string);
@@ -753,33 +742,7 @@ static void app_activate(GApplication *application){
 
 
 
-			GtkBox *box_cpu_socket = GTK_BOX(gtk_box_new(GTK_ORIENTATION_VERTICAL, 5));
-			GtkWidget *cpu_socket_label = gtk_label_new("Socket(s)                                                          ");
-			GtkWidget *cpu_socket_scale = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 1, 2 ,1);
 
-			for(int i = 1; i <= 2; i++){
-				char *css_style_cpu_socket_config = "<span size='small'>";
-				char *i_string = malloc(sizeof(char) * (int)log10(i));
-				sprintf(i_string, "%d", i);
-				char *css_style_cpu_socket_suffix = "</span>";
-				char *css_style_cpu_socket_scale = malloc(strlen(css_style_cpu_socket_config) +
-					       				  strlen(css_style_cpu_socket_suffix) +
-									  strlen(i_string)  + 1);
-
-				strcpy(css_style_cpu_socket_scale, css_style_cpu_socket_config);
-				strcat(css_style_cpu_socket_scale, i_string);
-				strcat(css_style_cpu_socket_scale, css_style_cpu_socket_suffix);
-
-				gtk_scale_add_mark(GTK_SCALE(cpu_socket_scale), i, GTK_POS_BOTTOM, css_style_cpu_socket_scale);
-			}
-
-			gtk_scale_set_has_origin(GTK_SCALE(cpu_socket_scale), TRUE);
-
-			g_signal_connect_swapped(cpu_socket_scale, "value_changed", G_CALLBACK(cpu_selected_sockets_callback), cpu_socket_scale);
-
-			//socket box
-			gtk_box_append(box_cpu_socket, cpu_socket_label);
-			gtk_box_append(box_cpu_socket, cpu_socket_scale);
 
 
 
@@ -847,7 +810,6 @@ static void app_activate(GApplication *application){
 
 			//box_cpu
 			gtk_box_append(GTK_BOX(box_cpu), cpu_TopLevelLabel);
-			gtk_box_append(GTK_BOX(box_cpu), GTK_WIDGET(box_cpu_socket));
 			gtk_box_append(GTK_BOX(box_cpu), GTK_WIDGET(box_cpu_cores));
 			gtk_box_append(GTK_BOX(box_cpu), GTK_WIDGET(box_cpu_threads));
 
