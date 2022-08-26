@@ -2,8 +2,8 @@
 <interface>
 	<object class="GtkApplicationWindow" id="window">
 		<property name="title">VM Installer CLI</property>
-		<property name="default-width">700</property>
-		<property name="default-height">450</property>
+		<property name="default-width">1000</property>
+		<property name="default-height">600</property>
 
 		<!--
 
@@ -16,7 +16,7 @@
             					<property name="valign">center</property>
           				</object>
         			</child>
-     				
+
 				<child>
           				<object class="GtkButton" id="button_next">
 						<property name="label">next</property>
