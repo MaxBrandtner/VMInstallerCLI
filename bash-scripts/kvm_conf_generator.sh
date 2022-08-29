@@ -1,11 +1,19 @@
 #!/bin/bash
-# $1 = gpu_number
-touch /etc/libvirt/hooks/kvm.conf
+# $1 = vm_name
+# $2 = gpu_number
+ls /etc/libvirt/hooks | grep kvm.conf
+return_value=$?
 
-while IFS= read -r line
-do
-	echo "VIRSH_GPU_$iterator=$line" >> /etc/libvirt/hooks/kvm.conf
+cat tmp/pci_ids || bash pci_ids.sh ${10} >> tmp/pci_ids
 
-	((iterator++))
-done < $(bash pci_ids.sh $1)
+if [ $return_value -eq 0 ]
+then
+	touch /etc/libvirt/hooks/$1/kvm.conf
+
+	while IFS= read -r line
+	do
+		echo "VIRSH_GPU_$iterator=$line" >> /etc/libvirt/hooks/$1/kvm.conf
+
+		((iterator++))
+done <tmp/pci_ids
 

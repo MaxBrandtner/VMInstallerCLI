@@ -6,7 +6,7 @@ then
 	exit 0
 fi
 
-iommu_group=$(lspci -nn | grep '\[0300' | head -n $1| tail -n 1 | sed 's/:.*//')
+iommu_group=$(lspci -nn | grep '\[0300' | head -n $1 | tail -n 1 | sed 's/:.*//')
 
 #lspci -nn | grep '\[0300' | head -n $1 | tail -n 1 | awk '{print $1}' | sed 's/:/_/' | sed 's/\./_/' | sed 's/^/pci_0000_/'
 

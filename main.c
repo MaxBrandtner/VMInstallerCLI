@@ -319,20 +319,25 @@ static void install_vm(){
 
 	//exec_string = NULL;
 
-
 	char* selected_cpu_cores_string = malloc((int)log10(selected_cpu_cores));
 	char* selected_cpu_threads_string = malloc((int)log10(selected_cpu_threads));
-	char* selected_memory_string = malloc((int)log10(selected_memory));
-	char* selected_storage_string = malloc((int)log10(selected_storage));
-	char* selected_paravirtualized_string = malloc(sizeof(char)*2);
+	//char* selected_memory_string = malloc((int)log10((int)selected_memory));
+	char* selected_memory_string = calloc(100, sizeof(char));
+  //char* selected_storage_string = malloc((int)log10(selected_storage));
+	char* selected_storage_string = calloc(100, sizeof(char));
+  char* selected_paravirtualized_string = malloc(sizeof(char)*2);
 	char* selected_graphics_mode_string = malloc((int)log10(selected_graphics_mode - 2));
 	char* selected_secboot_string = malloc(sizeof(char) *2);
 	char* selected_tpm_string = malloc(sizeof(char) * 5);
 
+
 	sprintf(selected_cpu_cores_string, "%d", selected_cpu_cores);
+
 	sprintf(selected_cpu_threads_string, "%d", selected_cpu_threads);
-	sprintf(selected_memory_string, "%f", selected_memory);
-	sprintf(selected_storage_string, "%f", selected_storage);
+
+	sprintf(selected_memory_string, "%d", (int)selected_memory);
+
+	sprintf(selected_storage_string, "%d", (int)selected_storage);
 
 	if(selected_graphics_mode >= 3){
 		sprintf(selected_paravirtualized_string, "1");
@@ -363,10 +368,11 @@ static void install_vm(){
 		//printf("error occurs here!\n");
 		sprintf(selected_tpm_string, "0");
 		//printf("selected_tpm!=1\n");
-	}
+	};
 
 	strcat(exec_string, exec_dir);
-	strcat(exec_string,"pkexec bash ../bash-scripts/main.sh");
+  strcat(exec_string, "cd ../bash-scripts&&");
+	strcat(exec_string,"pkexec --keep-cwd bash ../bash-scripts/main.sh");
 	strcat(exec_string, " \"");
 	strcat(exec_string, vm_name);
 	strcat(exec_string, "\" \"");
@@ -768,6 +774,7 @@ static void app_activate(GApplication *application){
 
                         gtk_scale_set_has_origin(GTK_SCALE(cpu_cores_scale), TRUE);
 												gtk_range_set_value(GTK_RANGE(cpu_cores_scale), cpu_cores - 1);
+			selected_cpu_cores = cpu_cores - 1;
 
 			g_signal_connect_swapped(cpu_cores_scale, "value_changed", G_CALLBACK(cpu_selected_cores_callback), cpu_cores_scale);
 
@@ -799,6 +806,7 @@ static void app_activate(GApplication *application){
 
                         gtk_scale_set_has_origin(GTK_SCALE(cpu_threads_scale), TRUE);
 												gtk_range_set_value(GTK_RANGE(cpu_threads_scale), cpu_threads);
+			selected_cpu_threads = cpu_threads;
 
 			g_signal_connect_swapped(cpu_threads_scale, "value_changed", G_CALLBACK(cpu_selected_threads_callback), cpu_threads_scale);
 
@@ -893,7 +901,7 @@ static void app_activate(GApplication *application){
 
 																if(max_free_storage > 50){
 																	gtk_range_set_value(GTK_RANGE(storage_scale), 50);
-
+	selected_storage = 50;
 																}
 
 			}
@@ -937,8 +945,13 @@ static void app_activate(GApplication *application){
 
                         gtk_scale_set_has_origin(GTK_SCALE(memory_scale), TRUE);
 												gtk_range_set_value(GTK_RANGE(memory_scale), max_memory / 2);
-                        gtk_scale_set_draw_value(GTK_SCALE(memory_scale), TRUE);
+                        selected_memory = max_memory / 2;
+												gtk_scale_set_draw_value(GTK_SCALE(memory_scale), TRUE);
                         gtk_scale_set_value_pos(GTK_SCALE(memory_scale), GTK_POS_BOTTOM);
+
+												//PangoLayout *memory_layout = gtk_scale_get_layout(GTK_SCALE(memory_scale));
+												//const gchar *const memory_markup = "<span color='red' size='small'>0MB</span>";
+												//pango_layout_set_markup(memory_layout, memory_markup, (gint)strlen(memory_markup));
 
                         g_signal_connect_swapped(memory_scale, "value_changed", G_CALLBACK(memory_selected_callback), memory_scale);
 

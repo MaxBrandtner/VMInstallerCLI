@@ -1,6 +1,16 @@
 #!/bin/bash
 # $1 = vm_name
       #<rom file="/etc/libvirt/hooks/qemu.d/$1/patched.rom"/>
+
+
+
+if [ -d /etc/libvirt/qemu/$1.xml ]
+then
+	echo "xml exists"
+else
+	exit 1
+fi
+
 xmlstarlet ed --insert "//hostdev[@type=pci]/address" --type elem -n rom -v "" /etc/libvirt/qemu/$1.xml | xmlstarlet ed --insert //rom --type attr -n file -v /etc/libvirt/hooks/qemu.d/$1/patched.rom > /etc/libvirt/qemu/$.xml
 
       #<relaxed state="on"/>

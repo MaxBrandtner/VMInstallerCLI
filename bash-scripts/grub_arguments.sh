@@ -37,23 +37,23 @@ export IommuNotFound=100
 
 try
 (
-    	echo "#################################"
-	echo "#check for grub iommu parameters#"
-	echo "#################################"
+    	echo "	#################################"
+	echo "	#check for grub iommu parameters#"
+	echo "	#################################"
 	echo " "
     	cat /etc/default/grub | grep CMDLINE_LINUX_DEFAULT| grep iommu || throw $IommuNotFound
 
     	# make sure to clear $ex_code, otherwise catch * will run
 	echo ""
-    	echo "####################################"
-	echo "#Found iommu grub cmdline parameter#"
-	echo "####################################"
+    	echo "	####################################"
+	echo "	#Found iommu grub cmdline parameter#"
+	echo "	####################################"
 )
 
 catch || {
-    	echo "############################"
-	echo "#check for cpu manufacturer#"
-	echo "############################"
+    	echo "	############################"
+	echo "	#check for cpu manufacturer#"
+	echo "	############################"
 	echo " "
     	case $ex_code in
         	$IommuNotFound)

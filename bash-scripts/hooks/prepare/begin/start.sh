@@ -20,7 +20,7 @@ function catch()
 set -x
 
 #load variables we defined
-source "/etc/libvirt/hooks/kvm.conf"
+source "/etc/libvirt/hooks/_INSERT_VM_NAME_/kvm.conf"
 
 #stop possible display managers
 try(

@@ -10,48 +10,70 @@
 # $9	= enabled_tmp
 # $10	= gpu_number
 
+echo $1
+echo $2
+echo $3
+echo $4
+echo $5
+echo $6
+echo $7
+echo $8
+echo $9
+echo ${10}
+
 #only needed for macos OS - selection not yet implemented
 #n_cpu_sockets=$((1+$5*$6))
 n_cpu_sockets=1
 
-sed 's/vm_name/'$1'/' <virsh_install.sh >virsh_install.sh
-sed 's/memory_size/'$2'/' <virsh_install.sh >virsh_install.sh
-sed 's/iso_path/'$3'/' <virsh_install.sh >virsh_install.sh
-sed 's/n_cpu_sockets/'$n_cpu_sockets'/' <virsh_install.sh >virsh_install.sh
-sed 's/n_cpu_cores/'$5'/' <virsh_install.sh >virsh_install.sh
-sed 's/n_cpu_threads/'$6'/' <virsh_install.sh >virsh_install.sh
+mkdir -p tmp
+cp virsh_install_blueprint.sh tmp/virsh_install.sh
 
-
+sed 's/vm_name/'$1'/' <virsh_install_blueprint.sh >tmp/virsh_install.sh
+sed -i 's/vm_name/'$1'/' tmp/virsh_install.sh
+sed -i 's/ '$1'/'$1'/' tmp/virsh_install.sh
+sed -i 's/memory_size/'$2'/' tmp/virsh_install.sh
+sed -i 's/storage_size/'$3'/' tmp/virsh_install.sh
+sed -i 's#iso_path#files/input.iso#' tmp/virsh_install.sh
+sed -i 's/n_cpu_sockets/'$n_cpu_sockets'/' tmp/virsh_install.sh
+sed -i 's/n_cpu_cores/'$5'/' tmp/virsh_install.sh
+sed -i 's/n_cpu_threads/'$6'/' tmp/virsh_install.sh
 
 if [ $7 == 1 ]
 then
-        sed 's/enabled_secboot/secboot/' <virsh_install.sh >virsh_install.sh
-        sed 's/enabled_secboot_yes_no/yes' <virsh_install.sh >virsh_install.sh
+        sed -i 's/enabled_secboot/secboot/' tmp/virsh_install.sh
+        sed -i 's/enabled_secboot_yes_no/yes --features smm.state=on/' tmp/virsh_install.sh
 else
-	sed 's/.enabled_secboot//' <virsh_install.sh >virsh_install.sh
-	sed 's/enabled_secboot_yes_no/no' <virsh_install.sh >virsh_install.sh
+	sed -i 's/.enabled_secboot//' tmp/virsh_install.sh
+	sed -i 's/enabled_secboot_yes_no/no/' tmp/virsh_install.sh
 fi
 
-
+pwd
 
 if [ $8 == 1 ]
 then
+	cat tmp/pci_ids || bash pci_ids.sh ${10} >> tmp/pci_ids
 	
 	while IFS= read -r line
 	do
-		sed 's/paravirt_options/ --hostdev '$line' paravirt_options' <virsh_install.sh >virsh_install.sh
+		sed -i 's/paravirt_options/ --hostdev '$line' paravirt_options/' tmp/virsh_install.sh
 
 		((iterator++))
-	done < $(bash pci_ids.sh $10)
+	done <tmp/pci_ids
 fi
 
-sed 's/paravirt_options/\\/'
+sed -i 's/paravirt_options/\\/' tmp/virsh_install.sh
 
 
 
 if [ $9 == 1 ]
 then
-	sed 's/enabled_tmp/--tpm emulator/' <virsh_install.sh >virsh_install.sh
+	sed -i 's/enabled_tpm/--tpm emulator/' tmp/virsh_install.sh
 else
-	sed 's/enabled_tmp//'
+	sed -i 's/enabled_tpm//' tmp/virsh_install.sh
 fi
+
+cp /usr/share/edk2-ovmf/x64/OVMF_VARS.fd /var/lib/libvirt/qemu/nvram/$1_VARS.fd
+modprobe vfio
+modprobe vfio-pci
+
+cat tmp/virsh_install.sh

@@ -14,26 +14,61 @@ cd $SCRIPT_DIR
 # $10 = enabled_secboot
 # $11 = enabled_tpm
 
-if [ whoami != 'root' ]
+if [ $(whoami) != 'root' ]
 then
+	echo "not root user"
 	exit 2
 fi
 
 usermod -a -G libvirt $(who | awk '{print $1}')
 
+mkdir -p tmp
+
+echo "############"
+echo "#copy files#"
+echo "############"
 bash copy_files.sh $2 $9
+echo "################"
+echo "#grub arguments#"
+echo "################"
 bash grub_arguments.sh
-bash install_romfile.sh $9
+
+echo "#################"
+echo "#install romfile#"
+echo "#################"
+bash install_romfile.sh $8
 
 
+echo "#########################"
+echo "#setup virsh install cmd#"
+echo "#########################"
+bash setup_virsh_install_cmd.sh $1 $5 $6 0 $3 $4 ${10} $7 ${11} $8
 
-bash setup_virsh_install_cmd.sh $1 $5 $6 $(echo "\"$(pwd)/files/input.iso\"") $3 $4 $10 $7 $11 $8
+echo "###############"
+echo "#virsh install#"
+echo "###############"
+bash tmp/virsh_install.sh
+virsh destroy $1
 
-bash virsh_install.sh
 
+echo "###########"
+echo "#xml edits#"
+echo "###########"
 bash xml_edits.sh $1
 
-
+echo "##########################"
+echo "#isolcpu script generator#"
+echo "##########################"
 bash isolcpu_script_generator.sh $3
+echo "#################"
+echo "#hooks generator#"
+echo "#################"
 bash hooks_generator.sh $1
-bash kvm_conf_generator.sh $8
+#bash kvm_conf_generator.sh $1 $8
+
+
+echo "##################"
+echo "#remove tmp files#"
+echo "##################"
+#rm -R files
+#rm -R tmp

@@ -17,7 +17,7 @@ function catch()
 
 set -x
 
-source "/etc/libvirt/hooks/kvm.conf"
+source "/etc/libvirt/hooks/_INSERT_VM_NAME_/kvm.conf"
 
 modprobe -r vfio_pci
 modprobe -r vfio_iommu_type1
