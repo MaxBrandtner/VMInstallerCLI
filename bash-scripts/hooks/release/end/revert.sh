@@ -92,3 +92,16 @@ catch || {
         }
 }
 
+
+sleep 90
+
+xrandr | grep Screen
+xrandr_return=$?
+
+if [ $xrandr_return -eq 0]
+then
+	echo "it worked"
+else
+	reboot
+fi
+

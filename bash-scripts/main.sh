@@ -42,19 +42,43 @@ bash install_romfile.sh $8
 echo "#########################"
 echo "#setup virsh install cmd#"
 echo "#########################"
-bash setup_virsh_install_cmd.sh $1 $5 $6 0 $3 $4 ${10} $7 ${11} $8
+bash setup_virsh_install_cmd.sh $1 $5 $6 0 $3 $4 ${10} $7 ${11} $8 0
+
+if [ $7 == 1 ]
+then
+	bash setup_virsh_install_cmd.sh $1 $5 $6 0 $3 $4 ${10} $7 ${11} $8 1
+fi
 
 echo "###############"
 echo "#virsh install#"
 echo "###############"
-bash tmp/virsh_install.sh
-virsh destroy $1
+function destroy_vm(){
+        i=0
+        while [ i == 0 ]
+        do
+        	virsh list --connect qemu:///system | grep $1
+        	virt_installed=$?
+        	if [ $virt_installed == 0 ]
+        	then
+        		virsh destroy $1
+        		i=1
+        	fi
+        done
+}
 
+bash tmp/virsh_install.sh &
+destroy_vm $1 &
+wait
+
+bash tmp/virsh_install_print_xml.sh >> tmp/virsh_replacement.xml
+rm /etc/libvirt/qemu/$1.xml
+cp tmp/virsh_replacement.xml /etc/libvirt/qemu/$1.xml
 
 echo "###########"
 echo "#xml edits#"
 echo "###########"
 bash xml_edits.sh $1
+virsh define /etc/libvirt/qemu/$1.xml
 
 echo "##########################"
 echo "#isolcpu script generator#"

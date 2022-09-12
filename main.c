@@ -412,6 +412,8 @@ static void install_vm(){
 
 
 static void app_startup(GApplication *application){
+
+
   //char self[PATH_MAX] = { 0 };
 	char* exe_dir;
 	//exe_dir = malloc(PATH_MAX + 1);
@@ -644,7 +646,7 @@ static void app_activate(GApplication *application){
 	GtkWidget *headerbar = gtk_header_bar_new();
 
 
-	GtkButton *button_previous = GTK_BUTTON(gtk_button_new_with_label("previous"));
+	GtkButton *button_previous = GTK_BUTTON(gtk_button_new_from_icon_name("go-previous-symbolic"));
 
 	g_signal_connect_swapped(button_previous, "clicked", G_CALLBACK(switch_to_previous), stack);
 
@@ -652,7 +654,7 @@ static void app_activate(GApplication *application){
 
 
 
-	GtkButton *button_next = GTK_BUTTON(gtk_button_new_with_label("next"));
+	GtkButton *button_next = GTK_BUTTON(gtk_button_new_from_icon_name("go-next-symbolic"));
 
 	g_signal_connect_swapped(button_next, "clicked", G_CALLBACK(switch_to_next), stack);
 
@@ -1079,14 +1081,12 @@ static void app_activate(GApplication *application){
 
 int main(int argc, char **argv){
 
-	GtkApplication *app = gtk_application_new(APPLICATION_ID, G_APPLICATION_FLAGS_NONE);
+	GtkApplication *app = gtk_application_new(APPLICATION_ID, G_APPLICATION_NON_UNIQUE);
 
 	g_signal_connect(app, "startup", G_CALLBACK(app_startup), NULL);
 	g_signal_connect(app, "activate", G_CALLBACK(app_activate), NULL);
 
-
-	int status = g_application_run(G_APPLICATION(app),argc, argv);
-
+  int status = g_application_run(G_APPLICATION(app),argc, argv);
 
 	g_object_unref(app);
 
