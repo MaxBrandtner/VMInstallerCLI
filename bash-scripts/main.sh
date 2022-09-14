@@ -54,7 +54,7 @@ echo "#virsh install#"
 echo "###############"
 function destroy_vm(){
         i=0
-        while [ i == 0 ]
+        while [ $i -eq 0 ]
         do
         	virsh list --connect qemu:///system | grep $1
         	virt_installed=$?
