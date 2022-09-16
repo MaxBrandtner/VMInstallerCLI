@@ -9,7 +9,7 @@
 # $8 	= paravirtualized
 # $9	= enabled_tmp
 # $10	= gpu_number
-# $11	= generate hostdev xml
+# $11	= generate xml
 
 echo $1
 echo $2
@@ -27,10 +27,14 @@ echo ${10}
 n_cpu_sockets=1
 
 virsh_install_dir='.tmp/virsh_install.sh'
+cp -u .tmp/files/input.iso /etc/libvirt/hooks/qemu.d/$1/input.iso
+iso_path='/etc/libvirt/hooks/qemu.d/$1/input.iso'
+#iso_path='.tmp/files/input.iso'
 
 if [ ${11} == 1 ]
 then
 	virsh_install_dir='.tmp/virsh_install_print_xml.sh'
+	#iso_path='/etc/libvirt/hooks/qemu.d/$1/input.iso'
 fi
 
 mkdir -p tmp
@@ -49,7 +53,7 @@ sed -i 's/vm_name/'$1'/' $virsh_install_dir
 sed -i 's/ '$1'/'$1'/' $virsh_install_dir
 sed -i 's/memory_size/'$2'/' $virsh_install_dir
 sed -i 's/storage_size/'$3'/' $virsh_install_dir
-sed -i 's#iso_path#files/input.iso#' $virsh_install_dir
+sed -i 's#iso_path#'$iso_path'#' $virsh_install_dir
 sed -i 's/n_cpu_sockets/'$n_cpu_sockets'/' $virsh_install_dir
 sed -i 's/n_cpu_cores/'$5'/' $virsh_install_dir
 sed -i 's/n_cpu_threads/'$6'/' $virsh_install_dir
