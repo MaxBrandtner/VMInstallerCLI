@@ -1,7 +1,7 @@
 #!/bin/bash
 # $1 = vm_name
       #<rom file="/etc/libvirt/hooks/qemu.d/$1/patched.rom"/>
-xml_file=tmp/virsh_replacement.xml
+xml_file=.tmp/virsh_replacement.xml
 rom_file=/etc/libvirt/hooks/qemu.d/$1/patched.rom
 
 uuid=$(cat /etc/libvirt/qemu/$1.xml | grep uuid | sed 's/<uuid>//' | sed 's#</uuid>##' | awk '{print $1}')

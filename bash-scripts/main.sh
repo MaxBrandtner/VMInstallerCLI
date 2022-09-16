@@ -76,13 +76,13 @@ function destroy_vm(){
         done
 }
 
-bash tmp/virsh_install.sh &
+bash .tmp/virsh_install.sh &
 destroy_vm $1 &
 wait
 
-bash tmp/virsh_install_print_xml.sh >> tmp/virsh_replacement.xml
+bash .tmp/virsh_install_print_xml.sh >> .tmp/virsh_replacement.xml
 rm /etc/libvirt/qemu/$1.xml
-cp tmp/virsh_replacement.xml /etc/libvirt/qemu/$1.xml
+cp .tmp/virsh_replacement.xml /etc/libvirt/qemu/$1.xml
 
 echo "###########"
 echo "#xml edits#"

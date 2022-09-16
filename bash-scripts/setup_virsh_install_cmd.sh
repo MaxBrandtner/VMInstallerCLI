@@ -26,11 +26,11 @@ echo ${10}
 #n_cpu_sockets=$((1+$5*$6))
 n_cpu_sockets=1
 
-virsh_install_dir='tmp/virsh_install.sh'
+virsh_install_dir='.tmp/virsh_install.sh'
 
 if [ ${11} == 1 ]
 then
-	virsh_install_dir='tmp/virsh_install_print_xml.sh'
+	virsh_install_dir='.tmp/virsh_install_print_xml.sh'
 fi
 
 mkdir -p tmp

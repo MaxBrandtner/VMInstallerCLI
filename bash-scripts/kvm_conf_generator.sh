@@ -4,7 +4,7 @@
 ls /etc/libvirt/hooks | grep kvm.conf
 return_value=$?
 
-cat tmp/pci_ids || bash pci_ids.sh ${10} >> tmp/pci_ids
+cat .tmp/pci_ids || bash pci_ids.sh ${10} >> .tmp/pci_ids
 
 if [ $return_value -eq 0 ]
 then
@@ -15,5 +15,5 @@ then
 		echo "VIRSH_GPU_$iterator=$line" >> /etc/libvirt/hooks/$1/kvm.conf
 
 		((iterator++))
-done <tmp/pci_ids
+done <.tmp/pci_ids
 

@@ -23,19 +23,17 @@ selected_core_threads_string=$(echo "$( echo "$selected_core_threads_string" | a
 #echo $selected_core_threads_string
 
 
-rm hooks/prepare/begin/isolstart.sh
-touch "hooks/prepare/begin/isolstart.sh"
-echo "systemctl set property --runtime -- user.slice AllowedCPUs=$selected_core_threads_string" >> hooks/prepare/begin/isolstart.sh
-echo "systemctl set property --runtime -- system.slice AllowedCPUs=$selected_core_threads_string" >> hooks/prepare/begin/isolstart.sh
-echo "systemctl set property --runtime -- init.scope AllowedCPUs=$selected_core_threads_string" >> hooks/prepare/begin/isolstart.sh
+rm .tmp/hooks/prepare/begin/isolstart.sh
+echo "systemctl set property --runtime -- user.slice AllowedCPUs=$selected_core_threads_string" >> .tmp/hooks/prepare/begin/isolstart.sh
+echo "systemctl set property --runtime -- system.slice AllowedCPUs=$selected_core_threads_string" >> .tmp/hooks/prepare/begin/isolstart.sh
+echo "systemctl set property --runtime -- init.scope AllowedCPUs=$selected_core_threads_string" >> .tmp/hooks/prepare/begin/isolstart.sh
 
-chmod +x hooks/prepare/begin/isolstart.sh
+chmod +x .tmp/hooks/prepare/begin/isolstart.sh
 
 
 rm hooks/release/end/isolrevert.sh
-touch "hooks/release/end/isolrevert.sh"
-echo "systemctl set property --runtime -- user.slice AllowedCPUs=0-$(( n_cores * n_threads - 1))" >> hooks/release/end/isolrevert.sh
-echo "systemctl set property --runtime -- system.slice AllowedCPUs=0-$(( n_cores * n_threads - 1))" >> hooks/release/end/isolrevert.sh
-echo "systemctl set property --runtime -- init.scope AllowedCPUs=0-$(( n_cores * n_threads - 1))" >> hooks/release/end/isolrevert.sh
+echo "systemctl set property --runtime -- user.slice AllowedCPUs=0-$(( n_cores * n_threads - 1))" >> .tmp/hooks/release/end/isolrevert.sh
+echo "systemctl set property --runtime -- system.slice AllowedCPUs=0-$(( n_cores * n_threads - 1))" >> .tmp/hooks/release/end/isolrevert.sh
+echo "systemctl set property --runtime -- init.scope AllowedCPUs=0-$(( n_cores * n_threads - 1))" >> .tmp/hooks/release/end/isolrevert.sh
 
-chmod +x hooks/release/end/isolrevert.sh
+chmod +x .tmp/hooks/release/end/isolrevert.sh
