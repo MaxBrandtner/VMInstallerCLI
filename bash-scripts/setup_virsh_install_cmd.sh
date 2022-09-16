@@ -75,7 +75,7 @@ then
 	then
 		#sed -i 's/paravirt_options/--paravirt paravirt_options/' tmp/virsh_install.sh
 		#sed -i 's/paravirt_options/--virt-type=kvm paravirt_options/' tmp/virsh_install.sh
-		cat tmp/pci_ids || bash pci_ids.sh ${10} >> tmp/pci_ids
+		cat .tmp/pci_ids || bash pci_ids.sh ${10} >> .tmp/pci_ids
 	
 		while IFS= read -r line
 		do
@@ -83,7 +83,7 @@ then
 			sed -i 's/--accelerate/--check path_in_use=off/' $virsh_install_dir
 
 			((iterator++))
-		done <tmp/pci_ids
+		done <.tmp/pci_ids
 	fi
 fi
 
