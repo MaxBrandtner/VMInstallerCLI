@@ -20,6 +20,16 @@ then
 	exit 2
 fi
 
+echo "###################"
+echo "#check iommu group#"
+echo "###################"
+if [ $(bash iommu_install_check.sh $8) == 1 ]:
+then
+	echo "devices other than GPU in iommu group"
+	lspci | grep $(lspci -nn | grep '\[0300\]' | sed 's/:/ /' | head -n $8 | tail -n 0)
+	exit 3
+fi
+
 usermod -a -G libvirt $(who | awk '{print $1}')
 
 mkdir -p tmp

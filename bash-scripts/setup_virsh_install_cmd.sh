@@ -65,7 +65,7 @@ fi
 
 pwd
 
-if [ $8 == 1 ]
+if [ $8 != 0 ]
 then
 	if [ ${11} == 1 ]
 	then
