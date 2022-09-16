@@ -20,22 +20,22 @@ It's goal is to make it as easy and as quick as possible to set up a VM
 
 ### Dependencies
 
-ubuntu (22.04)
+#### ubuntu 22.04
 ```bash
 sudo apt install virt-manager ovmf git meson libgtk-4-dev libadwaita-1-dev sed grep xmlstarlet qemu swtpm
 ```
 
-Debian (testing)(gtk4 not in stable yet)
+#### Debian testing (gtk4 not in stable yet)
 ```bash
 sudo apt install virt-manager ovmf git meson libgtk-4-dev libadwaita-1-dev sed grep xmlstarlet qemu-kvm qemu-efi swtpm
 ```
 
-Fedora (36)
+#### Fedora 36
 ```bash
 sudo dnf install virt-manager edk2-ovmf git meson gtk4 libadwaita sed grep xmlstarlet qemu qemu-kvm qemu-common swtpm
 ```
 
-Arch
+#### Arch
 ```bash
 sudo pacman -S virt-manager edk2-ovmf git meson gtk4 libadwaita sed grep xmlstarlet qemu-full swtpm
 ```
