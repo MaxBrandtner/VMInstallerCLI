@@ -775,6 +775,7 @@ static void app_activate(GApplication *application){
                         }
 
                         gtk_scale_set_has_origin(GTK_SCALE(cpu_cores_scale), TRUE);
+			gtk_range_set_round_digits(GTK_RANGE(cpu_cores_scale), 0);
 												gtk_range_set_value(GTK_RANGE(cpu_cores_scale), cpu_cores - 1);
 			selected_cpu_cores = cpu_cores - 1;
 
@@ -807,6 +808,7 @@ static void app_activate(GApplication *application){
                         }
 
                         gtk_scale_set_has_origin(GTK_SCALE(cpu_threads_scale), TRUE);
+			gtk_range_set_round_digits(GTK_RANGE(cpu_threads_scale), 0);
 												gtk_range_set_value(GTK_RANGE(cpu_threads_scale), cpu_threads);
 			selected_cpu_threads = cpu_threads;
 
