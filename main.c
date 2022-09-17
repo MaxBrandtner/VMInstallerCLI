@@ -31,6 +31,7 @@ GtkWidget *iso_filename_label;
 GtkWidget *romfile_icon;
 GtkWidget *romfile_filename_label;
 char *vm_name;
+unsigned int user_group_check = 0;
 
 
 void switch_to_next(GtkWidget *stack){
@@ -109,6 +110,23 @@ void switch_to_previous(GtkWidget *stack){
 
 
 void changed_vm_name_callback(GtkWidget *entry){
+	
+	char *groups_check = calloc(100, sizeof(char));
+	
+	if(user_group_check == 0){
+
+		strcpy(groups_check ,exec_dir);
+		strcat(groups_check ,"bash ../bash-scripts/user_groups_check.sh");
+	
+		system(groups_check);
+
+		user_group_check = 1;
+
+	} else{
+
+		free(groups_check);
+	}
+
 	GtkEntryBuffer *entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(entry));
 	vm_name = (char*)gtk_entry_buffer_get_text(GTK_ENTRY_BUFFER(entry_buffer));
 }
