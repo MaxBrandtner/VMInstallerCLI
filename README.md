@@ -20,7 +20,7 @@ It's goal is to make it as easy and as quick as possible to set up a VM
 
 ### Dependencies
 
-#### ubuntu 22.04
+#### Ubuntu 22.04
 ```bash
 sudo apt install virt-manager ovmf git meson libgtk-4-dev libadwaita-1-dev xmlstarlet qemu swtpm
 ```
