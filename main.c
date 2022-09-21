@@ -32,6 +32,8 @@ GtkWidget *romfile_icon;
 GtkWidget *romfile_filename_label;
 char *vm_name;
 unsigned int user_group_check = 0;
+unsigned int user_group_active = 0;
+unsigned int created_vm_name_output_file = 0;
 
 
 void switch_to_next(GtkWidget *stack){
@@ -47,7 +49,7 @@ void switch_to_next(GtkWidget *stack){
 		changed_visible_stack_child = 1;
 
 	}else if(flag == 1){
-		if(vm_name != NULL){
+		if(vm_name != ""){
 			gtk_stack_set_visible_child_name(GTK_STACK(stack), "select_iso_file");
 			changed_visible_stack_child = 1;
 		}
@@ -111,14 +113,18 @@ void switch_to_previous(GtkWidget *stack){
 
 void changed_vm_name_callback(GtkWidget *entry){
 	
-	char *groups_check = calloc(100, sizeof(char));
+	char *groups_check = calloc(BUFSIZ + 1, sizeof(char));
 	
 	if(user_group_check == 0){
 
 		strcpy(groups_check ,exec_dir);
 		strcat(groups_check ,"bash ../bash-scripts/user_groups_check.sh");
 	
-		system(groups_check);
+		int status = system(groups_check);
+
+		if(status == 0){
+			user_group_activate = 1;
+		}
 
 		user_group_check = 1;
 
@@ -128,7 +134,35 @@ void changed_vm_name_callback(GtkWidget *entry){
 	}
 
 	GtkEntryBuffer *entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(entry));
-	vm_name = (char*)gtk_entry_buffer_get_text(GTK_ENTRY_BUFFER(entry_buffer));
+	name_buffer = (char*)gtk_entry_buffer_get_text(GTK_ENTRY_BUFFER(entry_buffer));
+	
+	{
+		char *name_equal_check_buffer = calloc(BUFSIZ + 1, sizeof(char));
+
+		if(user_group_activate == 1){	
+			strcpy(name_equal_check_buffer, "virsh --connect qemu:///system list --all | awk '{print $2}' | grep -w ");
+		}else {
+			create_tmp_dir_buffer = calloc(BUFSIZ + 1, sizeof(char));
+
+			strcpy(create_tmp_dir_buffer, exec_dir);
+			strcat(create_tmp_dir_buffer, " cd ../bash-scripts; mkdir -p .tmp");
+
+		}
+
+
+		strcat(name_equal_check_buffer, name_buffer);
+
+		int status = system(name_equal_check_buffer);
+
+		if(status == 0){
+			vm_name = name_buffer;
+		}else{
+			vm_name = "";
+		}
+	}
+		
+	
+	}
 }
 
 
