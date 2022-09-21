@@ -12,6 +12,12 @@ THIS AN EARLY ALPHA WITHOUT ALL FEATURES IMPLEMENTED YET. THERE ARE BUGS / ISSUE
 >
 > - install feedback
 
+WORKAROUND FOR LACK OF OS SELECTION
+```bash
+export VIRTINSTALL_OSINFO_DISABLE_REQUIRE=1
+```
+
+
 ## Introduction
 
 VMInstallerCLI is a GUI application that is capable of setting up type-one-hypervisor VM, without the user having to write scripts, configure grub, xml edits, ...
