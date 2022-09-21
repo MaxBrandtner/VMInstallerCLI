@@ -66,7 +66,7 @@ function destroy_vm(){
         i=0
         while [ $i -eq 0 ]
         do
-        	virsh list --connect qemu:///system | grep $1
+        	virsh --connect qemu:///system list --all | grep -w $1
         	virt_installed=$?
         	if [ $virt_installed == 0 ]
         	then

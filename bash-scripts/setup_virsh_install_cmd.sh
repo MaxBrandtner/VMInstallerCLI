@@ -27,8 +27,12 @@ echo ${10}
 n_cpu_sockets=1
 
 virsh_install_dir='.tmp/virsh_install.sh'
+mkdir -p /etc/libvirt/hooks/qemu.d/$1
 cp -u .tmp/files/input.iso /etc/libvirt/hooks/qemu.d/$1/input.iso
-iso_path='/etc/libvirt/hooks/qemu.d/$1/input.iso'
+iso_path="/etc/libvirt/hooks/qemu.d/"$1"/input.iso"
+echo "####################"
+echo "#iso_path $iso_path#"
+echo "####################"
 #iso_path='.tmp/files/input.iso'
 
 if [ ${11} == 1 ]
