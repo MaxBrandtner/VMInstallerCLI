@@ -1,6 +1,7 @@
 #!/bin/bash
 virt-install --connect qemu:///system \
 --name  vm_name --arch=x86_64 --virt-type=kvm --print-xml=1 --machine=q35 \
+--osinfo detect=on,require=off \
 --memory memory_size \
 --disk /var/lib/libvirt/images/vm_name.qcow2,size=storage_size \
 --cdrom iso_path \
