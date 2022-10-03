@@ -34,6 +34,44 @@ char *vm_name;
 unsigned int user_group_check = 0;
 unsigned int user_group_active = 0;
 unsigned int created_vm_name_output_file = 0;
+unsigned int position_buffer = 0;
+GtkButton *button_previous;
+GtkButton *button_next;
+
+
+
+char* FilterArray(char* input_array){
+
+	int CharCheck(char input){
+		int dec_input = (int)input;
+
+		if((dec_input <= 31)||(dec_input >= 48 && dec_input <= 57)||(dec_input >= 65 && dec_input <= 90)||(dec_input >= 97 && dec_input <= 122)||(dec_input == 45)||(dec_input == 95)||(dec_input == 127)||(dec_input == 255)){
+
+			return 1;
+		}else{
+
+			return 0;
+		}
+	}
+
+
+	unsigned int invalid_chars = 0;
+
+	char* buffer_array = calloc(strlen(input_array), sizeof(char));
+
+
+	for(int i = 0; i < strlen(input_array); i ++){
+		if(CharCheck(input_array[i]) == 1){
+			buffer_array[i - invalid_chars] = input_array[i];
+
+		}else{
+			invalid_chars ++;
+		}
+	}
+
+	return buffer_array;
+}
+
 
 
 void switch_to_next(GtkWidget *stack){
@@ -49,7 +87,7 @@ void switch_to_next(GtkWidget *stack){
 		changed_visible_stack_child = 1;
 
 	}else if(flag == 1){
-		if(vm_name != ""){
+		if(vm_name != NULL){
 			gtk_stack_set_visible_child_name(GTK_STACK(stack), "select_iso_file");
 			changed_visible_stack_child = 1;
 		}
@@ -111,10 +149,12 @@ void switch_to_previous(GtkWidget *stack){
 }
 
 
+
 void changed_vm_name_callback(GtkWidget *entry){
 	
 	char *groups_check = calloc(BUFSIZ + 1, sizeof(char));
-	
+
+
 	if(user_group_check == 0){
 
 		strcpy(groups_check ,exec_dir);
@@ -123,7 +163,7 @@ void changed_vm_name_callback(GtkWidget *entry){
 		int status = system(groups_check);
 
 		if(status == 0){
-			user_group_activate = 1;
+			user_group_active = 1;
 		}
 
 		user_group_check = 1;
@@ -134,15 +174,28 @@ void changed_vm_name_callback(GtkWidget *entry){
 	}
 
 	GtkEntryBuffer *entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(entry));
-	name_buffer = (char*)gtk_entry_buffer_get_text(GTK_ENTRY_BUFFER(entry_buffer));
+	char* name_buffer = (char*)gtk_entry_buffer_get_text(GTK_ENTRY_BUFFER(entry_buffer));
+
+	name_buffer = FilterArray(name_buffer);
+
+	//gtk_entry_buffer_set_text(GTK_ENTRY_BUFFER(entry_buffer), name_buffer, strlen(name_buffer));
+	GtkEntryBuffer *entry_buffer_filtered = gtk_entry_buffer_new(name_buffer, strlen(name_buffer));
+
+  int entry_position = gtk_editable_get_position(GTK_EDITABLE(entry));
+	gtk_entry_set_buffer(GTK_ENTRY(entry), GTK_ENTRY_BUFFER(entry_buffer_filtered));
+  gtk_editable_set_position(GTK_EDITABLE(entry), entry_position);
+
+
+	//vm_name = name_buffer;
 	
 	{
 		char *name_equal_check_buffer = calloc(BUFSIZ + 1, sizeof(char));
 
-		if(user_group_activate == 1){	
+		if(user_group_active == 1){
 			strcpy(name_equal_check_buffer, "virsh --connect qemu:///system list --all | awk '{print $2}' | grep -w ");
+
 		}else {
-			create_tmp_dir_buffer = calloc(BUFSIZ + 1, sizeof(char));
+			char *create_tmp_dir_buffer = calloc(BUFSIZ + 1, sizeof(char));
 
 			strcpy(create_tmp_dir_buffer, exec_dir);
 			strcat(create_tmp_dir_buffer, " cd ../bash-scripts; mkdir -p .tmp");
@@ -152,16 +205,32 @@ void changed_vm_name_callback(GtkWidget *entry){
 
 		strcat(name_equal_check_buffer, name_buffer);
 
-		int status = system(name_equal_check_buffer);
+		int status = 0;
 
-		if(status == 0){
-			vm_name = name_buffer;
-		}else{
-			vm_name = "";
+		if(strcmp(name_buffer, "")){
+			status = system(name_equal_check_buffer);
 		}
-	}
-		
-	
+
+		if(status != 0){
+			vm_name = name_buffer;
+
+			if(strcmp(vm_name, "")){
+        gtk_widget_set_can_target(GTK_WIDGET(button_next), true);
+				gtk_entry_set_icon_from_icon_name(GTK_ENTRY(entry), GTK_ENTRY_ICON_SECONDARY, "emblem-ok-symbolic");
+				gtk_entry_set_icon_tooltip_text(GTK_ENTRY(entry), GTK_ENTRY_ICON_SECONDARY, "VM name available");
+			}else{
+        gtk_widget_set_can_target(GTK_WIDGET(button_next), false);
+				gtk_entry_set_icon_from_icon_name(GTK_ENTRY(entry), GTK_ENTRY_ICON_SECONDARY, "emblem-important-symbolic");
+				gtk_entry_set_icon_tooltip_text(GTK_ENTRY(entry), GTK_ENTRY_ICON_SECONDARY, "must enter VM name");
+			}
+		}else{
+			vm_name = NULL;
+      gtk_widget_set_can_target(GTK_WIDGET(button_next), false);
+			//gtk_widget_set_tooltip_text(GTK_WIDGET(entry), "VM already exists");
+			//gtk_tooltip_set_icon_from_gicon();
+			gtk_entry_set_icon_from_icon_name(GTK_ENTRY(entry), GTK_ENTRY_ICON_SECONDARY, "emblem-important-symbolic");
+			gtk_entry_set_icon_tooltip_text(GTK_ENTRY(entry), GTK_ENTRY_ICON_SECONDARY, "VM already exists");
+		}
 	}
 }
 
@@ -365,7 +434,7 @@ static void install_vm(){
 	//char* exec_string = malloc(10000);
 	//exec_string = "pkexec bash bash-scripts/main.sh";
 	//exec_string = (char *) malloc(strlen("pkexec bash bash-scripts/main.sh") + strlen(vm_name) + strlen(selected_iso_filename) + (int)log10(selected_cpu_sockets) + (int)log10(selected_cpu_cores) *  + (int)log10(selected_cpu_threads) + (int)log10(selected_memory) + (int)log10(selected_storage) + strlen(selected_rom_filename) + sizeof(int) * 100);
-	exec_string = (char *) malloc(10000000);
+	exec_string = (char *) calloc(BUFSIZ + 1, sizeof(char));
 	//printf("%ld\n", strlen(exec_string));
 	//exec_string = realloc(exec_string, 10000);
 
@@ -487,10 +556,6 @@ static void app_startup(GApplication *application){
 	//printf("%s\n", cmd_cd);
 	exec_dir = (char*)calloc(PATH_MAX, sizeof(char));
 	strcpy(exec_dir, cmd_cd);
-	//system(cmd_cd);
-	//gpu_names = malloc(sizeof(char*) * 1);
-	//gpu_names[0] = malloc(sizeof(char) * strlen("NVIDIA GeForce RTX 2060 Rev. A"));
-	//gpu_names[0] = "NVIDIA GeForce RTX 2060 Rev. A";
 
 
 	//cpu_cores
@@ -643,8 +708,6 @@ static void app_startup(GApplication *application){
 																	//(*gpu_names)[i] = (char*)realloc((*gpu_names[i]), strlen(buffer) * sizeof(char));
                                		gpu_names[i] = malloc(sizeof(char) * strlen(buffer));
 																	//printf("check alloc\n");
-																	//gpu_names[i] = buffer;
-																	//gpu_names[i] = NULL;
 																	strcpy(gpu_names[i], buffer);
 																	//int new_line_position = strcspn(gpu_names[i], "\n");
 																	strtok(gpu_names[i], "\n");
@@ -698,7 +761,7 @@ static void app_activate(GApplication *application){
 	GtkWidget *headerbar = gtk_header_bar_new();
 
 
-	GtkButton *button_previous = GTK_BUTTON(gtk_button_new_from_icon_name("go-previous-symbolic"));
+	button_previous = GTK_BUTTON(gtk_button_new_from_icon_name("go-previous-symbolic"));
 
 	g_signal_connect_swapped(button_previous, "clicked", G_CALLBACK(switch_to_previous), stack);
 
@@ -706,7 +769,7 @@ static void app_activate(GApplication *application){
 
 
 
-	GtkButton *button_next = GTK_BUTTON(gtk_button_new_from_icon_name("go-next-symbolic"));
+	button_next = GTK_BUTTON(gtk_button_new_from_icon_name("go-next-symbolic"));
 
 	g_signal_connect_swapped(button_next, "clicked", G_CALLBACK(switch_to_next), stack);
 
@@ -745,8 +808,15 @@ static void app_activate(GApplication *application){
 	{
 		GtkWidget *choose_vm_name_label = gtk_label_new("Choose VM name");
 		GtkWidget *choose_vm_name_entry = gtk_entry_new();
+		//gtk_widget_set_has_tooltip(GTK_WIDGET(choose_vm_name_entry), true);
+		gtk_entry_set_max_length(GTK_ENTRY(choose_vm_name_entry), 255);
+		gtk_entry_set_placeholder_text(GTK_ENTRY(choose_vm_name_entry), "VM Name...");
+
+		gtk_entry_set_icon_from_icon_name(GTK_ENTRY(choose_vm_name_entry), GTK_ENTRY_ICON_SECONDARY, "emblem-important-symbolic");
+		gtk_entry_set_icon_tooltip_text(GTK_ENTRY(choose_vm_name_entry), GTK_ENTRY_ICON_SECONDARY, "must enter VM name");
 
 		g_signal_connect_swapped(choose_vm_name_entry, "changed", G_CALLBACK(changed_vm_name_callback), choose_vm_name_entry);
+
 
 		gtk_box_append(GTK_BOX(box_choose_vm_name), GTK_WIDGET(choose_vm_name_label));
 		gtk_box_append(GTK_BOX(box_choose_vm_name), GTK_WIDGET(choose_vm_name_entry));
