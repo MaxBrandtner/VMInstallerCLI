@@ -19,6 +19,8 @@ VMInstallerCLI is a GUI application that is capable of setting up type-one-hyper
 
 It's goal is to make it as easy and as quick as possible to set up a VM
 
+CURRENTLY ONLY WORKS UNDER A LIMITED AMOUNT OF CONDITIONS. I HAVE NOT ADJUSTED FOR PEOPLE THAT USE A DISPLAY MANAGER OTHER THAN GDM, SDDM, or lightDM. PASSING THROUGH INTEGRATED GRAPHICS PROCESSORS MAY NOT WORK.
+
 ### Dependencies
 
 #### Ubuntu 22.04
@@ -40,8 +42,6 @@ sudo dnf install virt-manager edk2-ovmf git meson gtk4 libadwaita xmlstarlet qem
 ```bash
 sudo pacman -S virt-manager edk2-ovmf git meson gtk4 libadwaita xmlstarlet qemu-full swtpm
 ```
-
-
 
 ### Compilation
 
