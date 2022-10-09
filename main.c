@@ -3,8 +3,9 @@
 
 
 #define APPLICATION_ID "com.github.maxbrandtner.VMInstallerCLI"
+#define APPLICATION_URI "/com/github/maxbrandtner/VMInstallerCLI/"
 
-#define UI_DIR_WINDOW LOCAL_DIR "window.ui"
+#define UI_DIR_WINDOW APPLICATION_URI "window.ui"
 
 
 
@@ -31,7 +32,6 @@ GtkWidget *iso_filename_label;
 GtkWidget *romfile_icon;
 GtkWidget *romfile_filename_label;
 char *vm_name;
-unsigned int user_group_check = 0;
 unsigned int user_group_active = 0;
 unsigned int created_vm_name_output_file = 0;
 unsigned int position_buffer = 0;
@@ -151,28 +151,6 @@ void switch_to_previous(GtkWidget *stack){
 
 
 void changed_vm_name_callback(GtkWidget *entry){
-	
-	char *groups_check = calloc(BUFSIZ + 1, sizeof(char));
-
-
-	if(user_group_check == 0){
-
-		strcpy(groups_check ,exec_dir);
-		strcat(groups_check ,"bash ../bash-scripts/user_groups_check.sh");
-	
-		int status = system(groups_check);
-
-		if(status == 0){
-			user_group_active = 1;
-		}
-
-		user_group_check = 1;
-
-	} else{
-
-		free(groups_check);
-	}
-
 	GtkEntryBuffer *entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(entry));
 	char* name_buffer = (char*)gtk_entry_buffer_get_text(GTK_ENTRY_BUFFER(entry_buffer));
 
@@ -724,6 +702,17 @@ static void app_startup(GApplication *application){
 	/*for(int i = 0; i < n_gpus; i ++){
 		printf("%s\n", gpu_names[i]);
 	}*/
+
+  char *groups_check = calloc(BUFSIZ + 1, sizeof(char));
+
+  strcpy(groups_check ,exec_dir);
+	strcat(groups_check ,"bash ../bash-scripts/user_groups_check.sh");
+
+	int status = system(groups_check);
+
+  if(status == 0){
+		user_group_active = 1;
+	}
 }
 
 
@@ -734,7 +723,7 @@ static void app_startup(GApplication *application){
 static void app_activate(GApplication *application){
 	GtkApplication *app = GTK_APPLICATION(application);
 
-	GtkBuilder *build = gtk_builder_new_from_file(UI_DIR_WINDOW);
+	GtkBuilder *build = gtk_builder_new_from_resource(UI_DIR_WINDOW);
 
 	GtkWidget  *window  = GTK_WIDGET(gtk_builder_get_object(build, "window"));
 	//GtkHeaderBar *headerbar = GTK_HEADER_BAR(gtk_builder_get_object(build, "headerbar"));
@@ -896,10 +885,12 @@ static void app_activate(GApplication *application){
                                 gtk_scale_add_mark(GTK_SCALE(cpu_cores_scale), i, GTK_POS_BOTTOM, css_style_cpu_cores_scale);
                         }
 
-                        gtk_scale_set_has_origin(GTK_SCALE(cpu_cores_scale), TRUE);
-			gtk_range_set_round_digits(GTK_RANGE(cpu_cores_scale), 0);
-												gtk_range_set_value(GTK_RANGE(cpu_cores_scale), cpu_cores - 1);
-			selected_cpu_cores = cpu_cores - 1;
+
+      //gtk_scale_set_has_origin(GTK_SCALE(cpu_cores_scale), TRUE);
+			                  gtk_range_set_round_digits(GTK_RANGE(cpu_cores_scale), 0);
+                        gtk_range_set_increments(GTK_RANGE(cpu_cores_scale), 0, cpu_cores);
+                        gtk_range_set_value(GTK_RANGE(cpu_cores_scale), cpu_cores - 1);
+			                  selected_cpu_cores = cpu_cores - 1;
 
 			g_signal_connect_swapped(cpu_cores_scale, "value_changed", G_CALLBACK(cpu_selected_cores_callback), cpu_cores_scale);
 
